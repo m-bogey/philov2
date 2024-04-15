@@ -18,18 +18,10 @@ typedef	struct s_out
 
 typedef struct  s_minishell
 {
-        int     infile;
-        int     outfile;
         char    **arg;
         char    **in;
-        t_out	**out;
+        t_out	*out;
 		struct	s_minishell *next;
-
-		int		nb_elem;
-		pid_t	pid;
-		int		fd[2];
-        int     tmp_pipe;
-		int		nb_pipe;
 }   t_minishell;
 
 
@@ -45,11 +37,11 @@ typedef	enum
 	true
 }bool_li;
 
-t_li	*new_list(t_minishell *ms);
-bool_li	is_empty_list(t_li *li);
+t_minishell	*new_list();
+/*bool_li	is_empty_list(t_li *li);
 int		list_length(t_li *li);
-void	print_list(t_li *li);
-void	add_back(t_li *li, t_minishell *ms);
+void	print_list(t_li *li);*/
+void	add_back(t_minishell *ms);
 
 
 //-----------parsing---------
@@ -72,5 +64,23 @@ t_li_line		*parsing(char *line);
 t_li_line	*new_list_pars(t_token *tok);
 void	add_back_pars(t_li_line *li, t_token *tok);
 void	print_list_pars(t_li_line *li);
+
+//----------- execut ---------------
+
+typedef struct	s_pipex
+{
+				int		fd[2];
+				int 	tmp_pipe;
+				int		nb_pipe;
+				pid_t	pid;
+				int		infile;
+				int		outfile;
+}				t_pipex;
+
+int		pre_execut(t_minishell *ms, t_pipex *pipex, char **envp);
+
+//----------- init -----------------
+
+void    init_struct(t_pipex *pipex);
 
 #endif

@@ -19,11 +19,13 @@ SRC_DIR = srcs
 BUILD_DIR = .build
 
 SRC_FILES = main.c \
+			init_struct.c \
 			ft_strtok.c \
 			path.c \
 			path_utils.c \
 			liste.c \
-			parsing.c
+			parsing.c \
+			execut.c
 
 
 INCLUDES = includes

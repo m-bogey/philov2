@@ -6,7 +6,7 @@ t_li_line	*new_list_pars(t_token *tok);
 void	add_back_pars(t_li_line *li, t_token *tok);
 void	print_list_pars(t_li_line *li);
 
-void	remove_elem_liste(t_li_line *li)
+/*void	remove_elem_liste(t_li_line *li)
 {
 	t_li_line	*tmp;
 
@@ -17,7 +17,7 @@ void	remove_elem_liste(t_li_line *li)
 	}
 
 
-}
+}*/
 
 t_li_line	*parsing(char *line)
 {
@@ -32,7 +32,7 @@ t_li_line	*parsing(char *line)
 		add_back_pars(li, &token);
 	}
 	config_liste(li);
-	remove_elem_liste(li);
+	//remove_elem_liste(li);
 	return (li);
 }
 

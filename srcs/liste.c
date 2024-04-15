@@ -1,26 +1,28 @@
 #include "mini_shell.h"	
 
-t_li	*new_list(t_minishell *ms)
+t_minishell	*new_list()
 {
-	t_li	*new;
+	t_minishell	*new;
 
-	new = malloc(sizeof(t_li));
-	new->ms = ms;
+	new = malloc(sizeof(t_minishell));
+	new->arg = NULL;
+	new->in = NULL;
+	new->out = NULL;
 	new->next = NULL;
 	return (new);
 }
 
-void	add_back(t_li *li, t_minishell *ms)
+void	add_back(t_minishell *ms)
 {
-	t_li	*new;
+	t_minishell	*new;
 
-	while (li->next != NULL)
-		li = li->next;
-	new = new_list(ms);
-	li->next = new;
+	while (ms->next != NULL)
+		ms = ms->next;
+	new = new_list();
+	ms->next = new;
 }
 
-bool_li	is_empty_list(t_li *li)
+/*bool_li	is_empty_list(t_li *li)
 {
 	if(li == NULL)
 		return (true);
@@ -55,4 +57,4 @@ void	print_list(t_li *li)
 		li = li->next;
 	}
 	printf("\n");
-}
+}*/
