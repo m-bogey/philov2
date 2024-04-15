@@ -54,8 +54,11 @@ int	get_struct_ms(t_li_line *li, t_minishell *ms, t_pipex *pipex)
 	{
 		if (li->token.type == 0 || li->token.type == 1)
 		{
-			ms->arg[index[0]] = li->token.str;
-			index[0]++;
+			if (li->token.str[0] != '\0')
+			{
+				ms->arg[index[0]] = li->token.str;
+				index[0]++;
+			}
 		}
 		if (li->token.type == 2)
 		{
@@ -127,10 +130,12 @@ int	main(int argc, char **argv, char **envp)
 	t_minishell	*ms;
 	t_pipex		pipex;
 
+	using_history();
 	//const char *path = getenv("PATH");
 	while (1)
 	{
  		line = readline("\001\e[34m\002\nm\e[32mi\e[36mn\e[35mi\e[31mshell$ \e[0m");
+		add_history(line);
 		init_struct(&pipex);
 		li = parsing(line);
 	 	printf("\n\033[0;34m------------main-----------\033[0m\n");
@@ -140,12 +145,9 @@ int	main(int argc, char **argv, char **envp)
 		printf("\nliste ms\n");
 		print_ms(ms);
 		printf("\n");
-
-		// li = new_list(&ms);
-		// add_back(li, &ms);
-		// print_list(li);
 		pre_execut(ms, &pipex, envp);
 		//free struct 
+		free(line);
 	}
 }
 

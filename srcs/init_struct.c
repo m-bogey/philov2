@@ -7,6 +7,6 @@ void    init_struct(t_pipex *pipex)
 	pipex->infile = -1;
 	pipex->outfile = -1;
 	pipex->pid = -1;
-	pipex->fd[0] = -1;
-	pipex->fd[1] = -1;
+	//pipex->fd[0] = -1;
+	//pipex->fd[1] = -1;
 }

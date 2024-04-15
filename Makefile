@@ -1,6 +1,6 @@
 NAME = 	minishell
 
-CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) -I$(LIBFT_DIR) -g3
+CFLAGS = -Wall -Wextra  -I$(INCLUDES) -I$(LIBFT_DIR) -g3
 
 OPTI_FLAGS = -Ofast -march=native -flto -fno-signed-zeros -funroll-loops #-fsanitize=address
 

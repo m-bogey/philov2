@@ -97,7 +97,7 @@ void	print_list_pars(t_li_line *li)
 {
 	while (li->next != NULL)
 	{
-		if (li->token.str[0] != '\0')
+	//	if (li->token.str[0] != '\0')
 			printf("\033[0;32mstr = \033[0m%s \t \033[0;34mtype = \033[0m%d\n",li->token.str, li->token.type);
 		li = li->next;
 	}

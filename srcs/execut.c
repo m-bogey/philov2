@@ -20,8 +20,14 @@ int	pre_execut(t_minishell *ms, t_pipex *pipex, char **envp)
 		{
 			close(pipex->fd[1]);
 			close(pipex->infile);
+			if (pipex->tmp_pipe != -1)
+				close(pipex->tmp_pipe);
 			pipex->tmp_pipe = pipex->fd[0];
+			dprintf(2,"tmp = %d\n", pipex->tmp_pipe);
+			close(pipex->fd[0]);
 			ms = ms->next;
+			while (wait(0) > 0)
+				;
 		}
 		i++;
 	}
@@ -33,14 +39,24 @@ int	pre_execut(t_minishell *ms, t_pipex *pipex, char **envp)
 
 void	execut(t_minishell *ms, t_pipex *pipex, char **envp, int i)
 {
-	if (ms->in != NULL)
+	if (ms->in[0] != NULL)
 		redir_in(ms, pipex);
 	else if (pipex->tmp_pipe != -1)
+	{
+		dprintf(2, "hello\n");
 		dup2(pipex->tmp_pipe, 0);
-	if (ms->out != NULL)
+	}
+	if (ms->out->str != NULL)
+	{
+		dprintf(2,"wesh\n");
 		redir_out(ms, pipex);
+	}
 	else if (i < pipex->nb_pipe)
+	{
+		dprintf(2,"i = %d nb pipe = %d\n",i, pipex->nb_pipe);
 		dup2(pipex->fd[1], 1);
+	}
+	close(pipex->tmp_pipe);
 	ft_close(pipex); //voir ce aui doit etre close
 	execve(cmd_path(ms->arg[0], envp), ms->arg, envp);
 }
