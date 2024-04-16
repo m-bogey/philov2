@@ -9,6 +9,8 @@ t_minishell	*new_list()
 	new->in = NULL;
 	new->out = NULL;
 	new->next = NULL;
+	new->nb_in = 0;
+	new->nb_out = 0;
 	return (new);
 }
 

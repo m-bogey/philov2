@@ -21,15 +21,10 @@ typedef struct  s_minishell
         char    **arg;
         char    **in;
         t_out	*out;
+		int		nb_in;
+		int		nb_out;
 		struct	s_minishell *next;
 }   t_minishell;
-
-
-typedef	struct	s_li
-{
-	t_minishell	*ms;
-	struct s_li	*next;
-}				t_li;
 
 typedef	enum
 {

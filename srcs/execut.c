@@ -3,7 +3,7 @@
 void	execut(t_minishell *ms, t_pipex *pipex, char **envp, int i);
 void	redir_in(t_minishell *ms, t_pipex *pipex);
 void	redir_out(t_minishell *ms, t_pipex *pipex);
-void	ft_close(t_pipex *pipex);
+//void	ft_close(t_pipex *pipex);
 
 int	pre_execut(t_minishell *ms, t_pipex *pipex, char **envp)
 {
@@ -20,18 +20,13 @@ int	pre_execut(t_minishell *ms, t_pipex *pipex, char **envp)
 		{
 			close(pipex->fd[1]);
 			close(pipex->infile);
-			if (pipex->tmp_pipe != -1)
-				close(pipex->tmp_pipe);
+			close(pipex->tmp_pipe);
 			pipex->tmp_pipe = pipex->fd[0];
-			dprintf(2,"tmp = %d\n", pipex->tmp_pipe);
-			close(pipex->fd[0]);
 			ms = ms->next;
-			while (wait(0) > 0)
-				;
 		}
 		i++;
 	}
-	ft_close(pipex);
+	//ft_close(pipex);
 	while (wait(0) > 0)
 		;
 	return (0);
@@ -39,25 +34,27 @@ int	pre_execut(t_minishell *ms, t_pipex *pipex, char **envp)
 
 void	execut(t_minishell *ms, t_pipex *pipex, char **envp, int i)
 {
-	if (ms->in[0] != NULL)
+	close(pipex->fd[0]);
+	if (ms->nb_in > 0)
 		redir_in(ms, pipex);
 	else if (pipex->tmp_pipe != -1)
 	{
-		dprintf(2, "hello\n");
 		dup2(pipex->tmp_pipe, 0);
+		close(pipex->tmp_pipe);
 	}
-	if (ms->out->str != NULL)
+	if (ms->nb_out > 0)
 	{
-		dprintf(2,"wesh\n");
+		dprintf(2,"out = %s\n", ms->out->str);
 		redir_out(ms, pipex);
 	}
 	else if (i < pipex->nb_pipe)
 	{
 		dprintf(2,"i = %d nb pipe = %d\n",i, pipex->nb_pipe);
 		dup2(pipex->fd[1], 1);
+		close(pipex->fd[1]);
 	}
-	close(pipex->tmp_pipe);
-	ft_close(pipex); //voir ce aui doit etre close
+	//close(pipex->tmp_pipe);
+	//ft_close(pipex); //voir ce aui doit etre close
 	execve(cmd_path(ms->arg[0], envp), ms->arg, envp);
 }
 
@@ -91,7 +88,7 @@ void	redir_out(t_minishell *ms, t_pipex *pipex)
 	dup2(pipex->outfile, 1);
 	close(pipex->outfile);
 }
-
+/*
 void	ft_close(t_pipex *pipex)
 {
 	if (pipex->infile != -1)
@@ -102,4 +99,4 @@ void	ft_close(t_pipex *pipex)
 		close(pipex->fd[0]);
 	if (pipex->fd[1] != -1)
 		close(pipex->fd[1]);
-}
+}*/

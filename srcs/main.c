@@ -8,8 +8,6 @@ int	get_struct_ms(t_li_line *li, t_minishell *ms, t_pipex *pipex)
  	printf("\n\033[0;34m-----------get_struct_ms------------\033[0m\n");
  //	print_list_pars(li);
 	int			arg;
-	int			in;
-	int			out;
 	t_li_line	*li_dup;
 	int			index[3];
 	t_minishell	*ms_dup;
@@ -19,8 +17,6 @@ int	get_struct_ms(t_li_line *li, t_minishell *ms, t_pipex *pipex)
 	index[1] = 0;
 	index[2] = 0;
 	arg = 0;
-	in = 0;
-	out = 0;
 
 	if (!li)
 		return (0);
@@ -30,26 +26,24 @@ int	get_struct_ms(t_li_line *li, t_minishell *ms, t_pipex *pipex)
 		if (li_dup->token.type == 0 || li_dup->token.type == 1)
 			arg++;
 		if (li_dup->token.type == 2)
-			in++;
+			ms_dup->nb_in++;
 		if (li_dup->token.type == 3 || li_dup->token.type == 6)
-			out++;
+			ms_dup->nb_out++;
 		if (li_dup->token.type == 5)
 		{
 			pipex->nb_pipe++;
 			ms_dup->arg = ft_calloc(sizeof(char *), (arg + 1));
-			ms_dup->in = ft_calloc(sizeof(char *), (in + 1));
-			ms_dup->out = ft_calloc(sizeof(t_out), (out + 1));
+			ms_dup->in = ft_calloc(sizeof(char *), (ms_dup->nb_in + 1));
+			ms_dup->out = ft_calloc(sizeof(t_out), (ms_dup->nb_out + 1));
 			arg = 0;
-			in = 0;
-			out = 0;
 			add_back(ms_dup);
 			ms_dup = ms_dup->next;
 		}
 		li_dup = li_dup->next;
 	}
 	ms_dup->arg = ft_calloc(sizeof(char *), (arg + 1));
-	ms_dup->in = ft_calloc(sizeof(char *), (in + 1));
-	ms_dup->out = ft_calloc(sizeof(t_out), (out + 1));
+	ms_dup->in = ft_calloc(sizeof(char *), (ms_dup->nb_in + 1));
+	ms_dup->out = ft_calloc(sizeof(t_out), (ms_dup->nb_out + 1));
 	while (li->next)
 	{
 		if (li->token.type == 0 || li->token.type == 1)
@@ -72,10 +66,8 @@ int	get_struct_ms(t_li_line *li, t_minishell *ms, t_pipex *pipex)
 		{
 			if (li->token.str[0] != '\0')
 			{
-		//		dprintf(2, "STRING : %s\n", li->token.str);
 				ms->out[index[2]].str = li->token.str;
 				ms->out[index[2]].type = li->token.type;
-		//		dprintf(2, "TYPE : %d\n", li->token.type);
 				index[2]++;
 			}
 		}
@@ -115,6 +107,7 @@ void	print_ms(t_minishell *ms)
 			dprintf(2, "out[%d] = %s\n", i, ms->out[i].str);
 			i++;
 		}
+		dprintf(2, "nb in = %d    nb out = %d\n", ms->nb_in, ms->nb_out);
 		ms = ms->next;
 	}
 }
@@ -130,7 +123,6 @@ int	main(int argc, char **argv, char **envp)
 	t_minishell	*ms;
 	t_pipex		pipex;
 
-	using_history();
 	//const char *path = getenv("PATH");
 	while (1)
 	{
