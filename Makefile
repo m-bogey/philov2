@@ -1,6 +1,6 @@
 NAME = 	minishell
 
-CFLAGS = -Wall -Wextra  -I$(INCLUDES) -I$(LIBFT_DIR) -g3
+CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) -I$(LIBFT_DIR) -g3
 
 OPTI_FLAGS = -Ofast -march=native -flto -fno-signed-zeros -funroll-loops #-fsanitize=address
 
@@ -23,9 +23,21 @@ SRC_FILES = main.c \
 			ft_strtok.c \
 			path.c \
 			path_utils.c \
-			liste.c \
+			liste_li.c \
+			liste_ms.c \
 			parsing.c \
-			execut.c
+			execut.c \
+			heredoc.c \
+			create_env.c \
+			expand.c \
+			builtins_echo.c \
+			builtins_pwd.c \
+			builtins_export.c \
+			builtins_env.c \
+			builtins_cd.c \
+			builtins_exit.c \
+			builtins_unset.c \
+			remove_quote.c
 
 
 INCLUDES = includes
