@@ -75,21 +75,41 @@ size_t	ft_strlen_alnum(char *s)
 // 	printf("j = %zu\n",j);
 // }
 
-void	move_str(char *s, size_t i)
+char	*move_str(size_t size, char *s)
 {
-	size_t	begin;
+	char	*new_s;
+	size_t	i;
+	size_t	j;
+	int		count;
 
-	begin = i;
-	s[begin] = s[begin + 1];
-	while (is_alnum_or8(s[begin]) == 1)
+	count = 0;
+	i = 0;
+	j = 0;
+	new_s = malloc(sizeof(char) * (size + 1));
+	if (new_s == NULL)
+		return (NULL);
+	new_s[size] = '\0';
+	printf("size = %zu\n", size);
+	while (s[i])
 	{
-		while (s[begin])
+		if (s[i] == '$' && count == 0)
 		{
-			s[begin] = s[begin + 1];
-			begin++;
+			count = 1;
+			i++;
+			while (s[i] != '\0' && is_alnum_or8(s[i]) == 1)
+				i++;
 		}
-		begin = i;
+		if (s[i] != '\0')
+		{
+			new_s[j] = s[i];
+			i++;
+			j++;
+		}
+		else
+			new_s[j] = '\0';
 	}
+//	new_s[j] = '\0';
+	return (new_s);
 }
 char	*fill_new_s(size_t size, char *s, char *var)
 {
@@ -104,7 +124,6 @@ char	*fill_new_s(size_t size, char *s, char *var)
 	j = 0;
 	k = 0;
 	new_s = malloc(sizeof(char) * (size + 1));
-	printf("size = %zu\n", size + 1);
 	while (s[i] != '\0')
 	{
 		if (s[i] == '$' && count == 0)
@@ -120,10 +139,8 @@ char	*fill_new_s(size_t size, char *s, char *var)
 			while (s[i] != '\0' && is_alnum_or8(s[i]) == 1)
 				i++;
 		}
-	printf("j = %zu\n",j);
 		if (s[i] != '\0')
 		{
-			printf("s = %s\n",s);
 			new_s[j] = s[i];
 			i++;
 			j++;
@@ -135,7 +152,53 @@ char	*fill_new_s(size_t size, char *s, char *var)
 	return (new_s);
 }
 
-char	*str_expand(char *s, t_li_line *env, size_t i)
+char	*get_return_value(char *s, t_err *err)
+{
+	size_t	i;
+	size_t	j;
+	size_t	k;
+	char	*itoa_err;
+	char	*new_s;
+
+	i = 0;
+	j = 0;
+	k = 0;
+	itoa_err = ft_itoa(err->err);
+	printf("\nitoa char = %s\n", itoa_err);
+	new_s = malloc(sizeof(char) * (ft_strlen(itoa_err) + ft_strlen(s)
+			- 2 + 1));
+	new_s[ft_strlen(itoa_err) + ft_strlen(s)
+			- 2] = '\0';
+	if (new_s == NULL)
+		return (NULL);
+	while (s[i])
+	{
+		if (s[i] == '$' && s[i + 1] == '?')
+		{
+			while (itoa_err[k])
+			{
+				new_s[j] = itoa_err[k];
+				j++;
+				k++;
+			}
+			i += 2;
+		}
+		if (s[i])
+		{
+			new_s[j] = s[i];
+			i++;
+			j++;
+		}
+		else
+			new_s[j] = '\0';
+	}
+	new_s[j] = '\0';
+//	free(itoa_err);
+//	free(s);
+	return(new_s);
+}
+
+char	*str_expand(char *s, t_li_line *env, size_t i, t_err *err)
 {
 	char	*var;
 	char	*new_s;
@@ -144,28 +207,33 @@ char	*str_expand(char *s, t_li_line *env, size_t i)
 //si $USER <-ex qqch qui existe dans env
 //si $popo <-""""""""""" n'existe pas
 	var = get_env(s, env, i);
-	if (var != NULL)
+	printf("var = %s\n", s);
+	if (s[i + 1] == '?')
+		new_s = get_return_value(s, err);
+	else if (var != NULL)
 	{
 		//printf("size = %zu %zu %zu\n",ft_strlen(s), ft_strlen(var) , ft_strlen_alnum(s + i));
 		//new_s = malloc(sizeof(char) * (ft_strlen(s) + ft_strlen(var) - ft_strlen_alnum(s + i) + 1));
 		//if (new_s == NULL)
 		//	return (NULL); // voir protection a faire
-		printf("var = %s\n", s);
 		size = ft_strlen(s) + ft_strlen(var) - ft_strlen_alnum(s + i) + 1;
 		//fill_new_s(&new_s, s, var);
 		new_s = fill_new_s(size, s, var);
-		free(s);
-		return (new_s);
 	}
 	else
-		move_str(s, i);
-	return (s);
+	{
+		size = ft_strlen(s) - ft_strlen_alnum(s + i) + 1;
+		new_s = move_str(size , s);
+	}
+	free(s);
+	return (new_s);
 }
 
-void	expand(t_li_line *li, t_li_line *env)
+void	expand(t_li_line *li, t_li_line *env, t_err *err)
 {
 	size_t	i;
-(void)env;
+	(void)	env;
+	ft_printf("return value avant expand %d\n", err->err);
 	printf("\033[0;32m-------------- expand ---------------\033[0m\n");
 	while (li->next)
 	{
@@ -180,9 +248,9 @@ void	expand(t_li_line *li, t_li_line *env)
 			}
 			if (li->token.str[i] == '$')
 			{
-				li->token.str = str_expand(li->token.str, env, i);
+				li->token.str = str_expand(li->token.str, env, i, err);
 				printf("%s", li->token.str);
-				i = 0;
+				i = -1;
 			}
 			i++;
 		}

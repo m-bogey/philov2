@@ -1,20 +1,21 @@
 #include "mini_shell.h"
 
-static int	execut(t_minishell *ms, t_pipex *pipex, int i, t_li_line *li_env);
-static int	redir_in(t_minishell *ms, t_pipex *pipex);
-static int	redir_out(t_minishell *ms, t_pipex *pipex);
+static int	execut(t_minishell *ms, t_pipex *pipex, int i, t_li_line *li_env, t_li_line *li, t_err *err);
+static int	redir_in(t_minishell *ms, t_pipex *pipex, t_err *err);
+static int	redir_out(t_minishell *ms, t_pipex *pipex, t_err *err);
 void		ft_close(t_pipex *pipex);
 
-int		check_builtins(t_minishell *ms, t_li_line *li_env, char **env);
+int		check_builtins(t_minishell *ms, t_li_line *li_env, char **env, t_li_line *li, t_err *err);
 
-int	pre_execut(t_minishell *ms, t_pipex *pipex, t_li_line *li_env)
+int	pre_execut(t_minishell *ms, t_pipex *pipex, t_li_line *li_env, t_li_line *li, t_err *err)
 {
 	int		i;
 	char	**env;
+	int		status;
 
 	i = 0;
 	env = liste_env_to_tab(li_env);
-	if (check_builtins(ms, li_env, env) == 1 && pipex->nb_pipe == 0)
+	if (pipex->nb_pipe == 0 && check_builtins(ms, li_env, env, li, err) == 1)
 		return (0);
 	free(env);
 	while (i <= pipex->nb_pipe)
@@ -25,12 +26,19 @@ int	pre_execut(t_minishell *ms, t_pipex *pipex, t_li_line *li_env)
 		if (pipex->pid == -1)
 			return (-1);
 		if (pipex->pid == 0)
-			execut(ms, pipex, i, li_env);
+		{
+			fork_sig();
+			if (execut(ms, pipex, i, li_env, li, err) == -1)
+				return(-1);
+			exit(1);
+		}
 		else
 		{
 			close(pipex->fd[1]);
-	//		close(pipex->infile);
-	//		close(pipex->tmp_pipe);
+			if (pipex->infile != -1)
+				close(pipex->infile);
+			if (pipex->tmp_pipe != -1)
+				close(pipex->tmp_pipe);
 			pipex->tmp_pipe = pipex->fd[0];
 			ms = ms->next;
 		}
@@ -38,52 +46,60 @@ int	pre_execut(t_minishell *ms, t_pipex *pipex, t_li_line *li_env)
 	}
 	//close(pipex->tmp_pipe);
 	//ft_close(pipex);
-	while (wait(0) > 0)
+	exec_sig ();
+	while (wait(&status) > 0)
+	{
+		if (WIFEXITED(status))
+			g_sig = 0;
 		;
+	}
+	if (g_sig == SIGQUIT)    // AJOUTE PEUT ETRE DU \n POUR LE CTRL C ICI A VOIR
+		write (2, "Quit (core dumped)\n", 19);
+	g_sig = 0;
 	return (0);
 }
 
-int		check_builtins(t_minishell *ms, t_li_line *li_env, char **env)
+int	check_builtins(t_minishell *ms, t_li_line *li_env, char **env, t_li_line *li, t_err *err)
 {
 	if (ms->nb_arg == 0)
 		return (0);
 	if (ft_strcmp(ms->arg[0], "echo") == 0)
 	{
-		echo(ms);
+		echo(ms, err);
 		return (1);
 	}
 	if (ft_strcmp(ms->arg[0], "pwd") == 0)
 	{
-		pwd();
+		pwd(err);
 		return (1);
 	}
 	if (ft_strcmp(ms->arg[0], "export") == 0)
 	{
-		export(ms, li_env, env);
+		export(ms, li_env, env, err);
 		return (1);
 	}
 	if (ft_strcmp(ms->arg[0], "env") == 0)
 	{
-		envi(env);
+		envi(env, err);
 		return (1);
 	}
 	if (ft_strcmp(ms->arg[0], "cd") == 0)
 	{
-		if (change_directory(ms, li_env) == -1)
+		if (change_directory(ms, li_env, err) == -1)
 			return (-1);
 		return (1);
 	}
 	if (ft_strcmp(ms->arg[0], "exit") == 0)
-		exit_minishell(1);
+		exit_minishell(1, ms, li_env, li, env, err);
 	if (ft_strcmp(ms->arg[0], "unset") == 0)
 	{
-		unset(li_env, ms);
+		unset(li_env, ms, err);
 		return (1);
 	}
 	return (0);
 }
 
-static int	execut(t_minishell *ms, t_pipex *pipex, int i, t_li_line *li_env)
+static int	execut(t_minishell *ms, t_pipex *pipex, int i, t_li_line *li_env, t_li_line *li, t_err *err)
 {
 	char	**env;
 	int		return_value;
@@ -91,9 +107,9 @@ static int	execut(t_minishell *ms, t_pipex *pipex, int i, t_li_line *li_env)
 	close(pipex->fd[0]);
 	if (ms->nb_in > 0)
 	{
-		return_value = redir_in(ms, pipex);
+		return_value = redir_in(ms, pipex, err);
 		if (return_value != 0)
-			return (return_value);
+			return (ft_free_ms(ms), return_value);
 	}
 	else if (pipex->tmp_pipe != -1)
 	{
@@ -103,9 +119,9 @@ static int	execut(t_minishell *ms, t_pipex *pipex, int i, t_li_line *li_env)
 	}
 	if (ms->nb_out > 0)
 	{
-		return_value = redir_out(ms, pipex);
+		return_value = redir_out(ms, pipex, err);
 		if (return_value != 0)
-			return (return_value);
+			return (ft_free_ms(ms), return_value);
 	}
 	else if (i < pipex->nb_pipe)
 	{
@@ -114,25 +130,36 @@ static int	execut(t_minishell *ms, t_pipex *pipex, int i, t_li_line *li_env)
 		close(pipex->fd[1]);
 	}
 	env = liste_env_to_tab(li_env);
-	if (check_builtins(ms, li_env, env) == 1)
-		return (0);
-	//close(pipex->tmp_pipe);
-	//ft_close(pipex); //voir ce aui doit etre close
-	execve(cmd_path(ms->arg[0], env), ms->arg, env);
+	if (check_builtins(ms, li_env, env, li, err) == 1)
+		return (free(env), 0);
+	if (ms->arg[0] != NULL)
+	{
+		if (cmd_path(ms->arg[0], env, err) == NULL)
+		{
+			ft_printf("FUK OFF\n");
+			err->err = 127;
+			return (ft_free_ms(ms), free(env), -1);
+		}
+		execve(cmd_path(ms->arg[0], env, err), ms->arg, env);
+		free(env);
+	}
 	exit(EXIT_FAILURE);
-	return (0);
 }
 
-static int	redir_in(t_minishell *ms, t_pipex *pipex)
+static int	redir_in(t_minishell *ms, t_pipex *pipex, t_err *err)
 {
 	int	i;
 
 	i = 0;
+	dprintf(2, "NOM DE FICHIER OUVERTURE : %s\n", ms->in[i].str);
 	while (ms->in[i].str && ms->in[i].type == 2)
 	{
-		pipex->infile = open(ms->in[0].str, O_RDONLY);
+		pipex->infile = open(ms->in[i].str, O_RDONLY);
 		if (pipex->infile == -1)
+		{
+			err->err = 126;
 			return (126);
+		}
 		i++;
 	}
 	if (dup2(pipex->infile, 0) == -1)
@@ -141,7 +168,7 @@ static int	redir_in(t_minishell *ms, t_pipex *pipex)
 	return (0);
 }
 
-static int	redir_out(t_minishell *ms, t_pipex *pipex)
+static int	redir_out(t_minishell *ms, t_pipex *pipex, t_err *err)
 {
 	int	i;
 
@@ -152,13 +179,19 @@ static int	redir_out(t_minishell *ms, t_pipex *pipex)
 		{
 			pipex->outfile = open(ms->out[i].str, O_CREAT | O_WRONLY | O_APPEND, 0644);
 			if (pipex->outfile == -1)
+			{
+				err->err = 126;
 				return (126);
+			}
 		}
 		else
 		{
 			pipex->outfile = open(ms->out[i].str, O_CREAT | O_RDWR | O_TRUNC, 0644);
 			if (pipex->outfile == -1)
+			{
+				err->err = 126;
 				return (126);
+			}			
 		}
 		i++;
 	}

@@ -10,18 +10,14 @@ SRC = \
 	ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
 	ft_print_p.c ft_printf.c ft_putchar.c ft_putnbr_base.c ft_putnbr.c \
 	ft_putstr.c ft_putunsign.c ft_strlen_print.c \
-	get_next_line.c get_next_line_utils.c
-
-SRC_B = \
-	ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstsize.c ft_lstlast.c \
-	ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c
+	get_next_line.c get_next_line_utils.c \
+   	ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstsize.c ft_lstlast.c \
+    ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c
 
 OBJ = $(SRC:.c=.o)
-OBJ_B = $(SRC_B:.c=.o)
 CFLAGS = -Wall -Wextra -Werror
 
 all : $(NAME)
-
 
 %.o : %.c libft.h
 	$(CC) $(CFLAGS) -o $@ -c $<
@@ -41,6 +37,3 @@ re:	fclean
 	$(MAKE) all
 
 .PHONY : bonus
-
-bonus : 
-	$(MAKE) SRC="$(SRC) $(SRC_B)"

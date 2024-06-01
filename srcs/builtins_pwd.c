@@ -12,12 +12,17 @@
 
 #include "mini_shell.h"
 
-void	pwd(void)
+void	pwd(t_err *err)
 {
-	char	buf[1024];
+	char	*buf;
 
-	if (getcwd(buf, sizeof(buf)) != NULL)
-		ft_printf("%s", buf);
+	buf = getcwd(NULL, 0);
+	if (buf != NULL)
+	{
+		ft_printf("%s\n", buf);
+		free(buf);
+	}
 	else
 		perror("getcwd");
+	err->err = 0;
 }

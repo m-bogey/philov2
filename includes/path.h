@@ -13,7 +13,7 @@
 #ifndef PATH_H
 # define PATH_H
 
-# include <stdio.h>
+/*# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
@@ -33,8 +33,8 @@ typedef struct s_join
 	int		j;
 }				t_join;
 
-char	*cmd_path(char *ag, char **envp);
+char	*cmd_path(char *ag, char **envp, t_minishell *ms);
 void	ft_free_tab(char **tab);
 char	*ft_strjoin_free(char *s1, char *s2);
-
+*/
 #endif

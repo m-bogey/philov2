@@ -12,9 +12,18 @@ t_li_line	*liste_env(char **envp)
 	liste_env = new_list_pars(&token);
 	while (envp[i])
 	{
-		token.str = ft_strdup(envp[i]);
-		token.type = 0;
-		add_back_pars(liste_env, &token);
+		if (envp[i][0] == '_')
+		{
+			token.str = ft_strdup("_=/usr/bin/env");
+			token.type = 0;
+			add_back_pars(liste_env, &token);
+		}
+		else
+		{
+			token.str = ft_strdup(envp[i]);
+			token.type = 0;
+			add_back_pars(liste_env, &token);
+		}
 		i++;
 	}
 	return (liste_env);

@@ -30,26 +30,42 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-int	heredoc(t_minishell *ms)
+int	heredoc(t_minishell *ms, int i)
 {
 	char	*line;
 
+	dprintf(2, "VRAI MOT DE FIN DU HEREDOC : %s\n", ms->in[i].str);
 	line = NULL;
+	init_sig();
+	temp_file(ms, i);
+	ms->temp_fd = open(ms->temp_name[i], O_CREAT | O_RDWR | O_EXCL, 0600);
 	line = readline("heredoc> ");
-	ms->heredoc = ft_strdup("");
-	while (ft_strcmp(line, ms->in[0].str) != 0)
+	if (line == NULL)
+		return (1);
+	if (g_sig == SIGINT)
+		return (2);
+	ms->heredoc[i] = ft_strdup("");
+	while (ft_strcmp(line, ms->in[i].str) != 0)
 	{
-		ms->heredoc = ft_strjoin(ms->heredoc, line);
-		ms->heredoc = ft_strjoin(ms->heredoc, "\n");
+		ms->heredoc[i] = ft_strjoin(ms->heredoc[i], line);
+		ms->heredoc[i] = ft_strjoin(ms->heredoc[i], "\n");
 		free(line);
 		line = readline("heredoc> ");
+		if (line == NULL)
+		{
+			ft_putstr_fd(ms->heredoc[i], ms->temp_fd);
+			close(ms->temp_fd);
+			ms->in[0].str = ms->temp_name[i];
+			return (1);
+		}
+		if (g_sig == SIGINT)
+			return (2);
 	}
-	temp_file(ms);
-	ms->temp_fd = open(ms->temp_name, O_CREAT | O_RDWR | O_EXCL, 0600);
-	ft_putstr_fd(ms->heredoc, ms->temp_fd);
+	dprintf(2, "STRING DE CON : \n%s\n", ms->heredoc[i]);
+	ft_putstr_fd(ms->heredoc[i], ms->temp_fd);
 	close(ms->temp_fd);
-	ms->in[0].str = ms->temp_name;
-	ms->in[0].type = 2;
+	ms->in[i].str = ms->temp_name[i];
+	ms->in[i].type = 2; // A VOIR SI ON DOIT PAS LE LAISSER EN 4 POUR EXPAND
 	return (0);
 }
 
@@ -60,23 +76,24 @@ int ft_abs(int num)
 	return (num);
 }
 
-int temp_file(t_minishell *ms)
+int temp_file(t_minishell *ms, int i)
 {
 	int		fd;
-	int		i;
+	int		j;
 	char	buf[6];
 
-	i = 0;
+	j = 0;
 	fd = open("/dev/urandom", O_RDONLY);
-	ms->temp_name = ft_strdup("/tmp/minishell-thd.000000");
+	ms->temp_name[i] = ft_strdup("/tmp/minishell-thd.000000");
 	if (read(fd, buf, 6) == -1)
 		return (-1);
-	while (i < 6)
+	while (j < 6)
 	{
-		ms->temp_name[19 + i] = ALNUM[ft_abs(buf[i] % 62)];
-		i++;
+		ms->temp_name[i][19 + j] = ALNUM[ft_abs(buf[j] % 62)];
+		j++;
 	}
 	if (close(fd) == -1)
 		return (-1);
+	dprintf(2, "NOM DE FICHIER TEMPORAIRE : %s\n", ms->temp_name[i]);
 	return (0);
 }

@@ -103,6 +103,7 @@ t_li_line	*parsing(char *line)
 		add_back_pars(li, &token);
 	}
 	config_liste(li);
+	free(line);
 	//dup_str_in_li(li);
 	return (li);
 }
@@ -115,26 +116,41 @@ void	config_liste(t_li_line *li)
 	print_list_pars(li);
 	while (li->next != NULL)
 	{
+		if (li->token.type == 5)
+			if (li->next->token.type == 2 || li->next->token.type == 3 || li->next->token.type == 4 || li->next->token.type == 6 || li->next->token.type == 5)
+				ft_printf("bash: syntax error near unexpected token `|'\n");
 		if (li->token.type == 2)
 		{
 			if (li->next->token.type == 2)
 			{
+				if (li->next->next->token.str[0] == '\0')
+					ft_printf("bash: syntax error near unexpected token `<<'\n");
 				li = li->next;
 				li->next->token.type = 4;
 			}
 			else
+			{
+				if (access(li->next->next->token.str, W_OK) == -1 || li->next->next->token.str[0] == '\0')
+					ft_printf("bash: syntax error near unexpected token `<'\n");
 				li->next->token.type = 2;
+			}
 			li = li->next;
 		}
 		if (li->token.type == 3)
 		{
 			if (li->next->token.type == 3)
 			{
+				if (li->next->next->token.str[0] == '\0')
+					ft_printf("bash: syntax error near unexpected token `>>'\n");
 				li = li->next;
 				li->next->token.type = 6;
 			}
 			else
+			{
+				if (li->next->token.str[0] == '\0')
+					ft_printf("bash: syntax error near unexpected token `>'\n");
 				li->next->token.type = 3;
+			}
 			li = li->next;
 		}
 		li = li->next;

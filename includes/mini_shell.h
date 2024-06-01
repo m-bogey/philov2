@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mini_shell.h                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tcoze <tcoze@student.1337.ma>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/18 15:06:39 by tcoze             #+#    #+#             */
+/*   Updated: 2024/05/18 15:06:39 by tcoze            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINI_SHELL_H
 # define MINI_SHELL_H
 
@@ -9,6 +21,7 @@
 # include <unistd.h>
 # include <fcntl.h> // open
 # include "path.h"
+# include <sys/wait.h>
 
 # define ALNUM "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
@@ -18,7 +31,12 @@ typedef struct s_out
 	int		type;
 }				t_out;
 
-typedef struct s_minishell
+typedef struct	s_err
+{
+	int	err;
+}				t_err;
+
+typedef struct	s_minishell
 {
 	char	**arg;
 	t_out	*in;
@@ -26,8 +44,8 @@ typedef struct s_minishell
 	int		nb_arg;
 	int		nb_in;
 	int		nb_out;
-	char	*heredoc;
-	char	*temp_name;
+	char	**heredoc;
+	char	**temp_name;
 	int		temp_fd;
 	struct s_minishell	*next;
 }				t_minishell;
@@ -77,29 +95,56 @@ typedef struct s_pipex
 	int		outfile;
 }				t_pipex;
 
-int	pre_execut(t_minishell *ms, t_pipex *pipex, t_li_line *li_env);
+int	pre_execut(t_minishell *ms, t_pipex *pipex, t_li_line *li_env, t_li_line *li, t_err *err);
 
 //----------- init -----------------
 
 void    init_struct(t_pipex *pipex);
 
 //----------- heredoc --------------
-int		heredoc(t_minishell *ms);
-int		temp_file(t_minishell *ms);
+int		heredoc(t_minishell *ms, int i);
+int		temp_file(t_minishell *ms, int i);
 
 //----------- expand ---------------
-void	expand(t_li_line *li, t_li_line *env);
+void	expand(t_li_line *li, t_li_line *env, t_err *err);
 
 //----------- builtins -------------
-void	echo(t_minishell *ms);
-void	pwd(void); // voir si return necessaire pour getcwd
-void	export(t_minishell *ms, t_li_line *li_env, char **env);
-void	envi(char **env);
-int		change_directory(t_minishell *ms, t_li_line *li_env);
-void	exit_minishell(int status);
-void	unset(t_li_line *li_env, t_minishell *ms);
+void	echo(t_minishell *ms, t_err *err);
+void	pwd(t_err *err); // voir si return necessaire pour getcwd
+void	export(t_minishell *ms, t_li_line *li_env, char **env, t_err *err);
+void	envi(char **env, t_err *err);
+int		change_directory(t_minishell *ms, t_li_line *li_env, t_err *err);
+void	exit_minishell(int status, t_minishell *ms, t_li_line *li_env, t_li_line *li, char **env, t_err *err);
+void	unset(t_li_line *li_env, t_minishell *ms, t_err *err);
 
 //----------- remove quote --------
 int	remove_quote(t_li_line *li);
+
+//----------- sig ------------------
+void	init_sig(void);
+void	fork_sig(void);
+void	exec_sig(void);
+extern int	g_sig;
+
+//----------- path ------------------
+typedef struct s_path
+{
+	int		p;
+	char	**tab_path;
+	char	*path;
+}				t_path;
+
+typedef struct s_join
+{
+	int		i;
+	int		j;
+}				t_join;
+
+char	*cmd_path(char *ag, char **envp, t_err *err);
+void	ft_free_tab(char **tab);
+char	*ft_strjoin_free(char *s1, char *s2);
+
+int	pre_parsing(char *line);
+int	ft_strcmp(char *s1, char *s2);
 
 #endif

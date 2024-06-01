@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "path.h"
+#include "mini_shell.h"
 
 static int		search_path(char **envp);
 static char		*check_slash(char *str);
 static char		*found_slash(char *str);
 static void		init_cmd_path(t_path *p, char *ag, char **envp);
 
-char	*cmd_path(char *ag, char **envp)
+char	*cmd_path(char *ag, char **envp, t_err *err)
 {
 	t_path	p;
 
@@ -35,7 +35,11 @@ char	*cmd_path(char *ag, char **envp)
 		p.p++;
 	}
 	if (p.path == NULL)
+	{
 		write (2, "command not found\n", 18);
+		err->err = 127;
+		ft_printf("return value cmd_path : %d\n", err->err);
+	}
 	ft_free_tab(p.tab_path);
 	return (p.path);
 }

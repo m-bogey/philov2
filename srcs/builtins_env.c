@@ -12,7 +12,7 @@
 
 #include "mini_shell.h"
 
-void	envi(char **env)
+void	envi(char **env, t_err *err)
 {
 	size_t	i;
 
@@ -23,4 +23,5 @@ void	envi(char **env)
 			ft_printf("%s\n", env[i]);
 		i++;
 	}
+	err->err = 0;
 }

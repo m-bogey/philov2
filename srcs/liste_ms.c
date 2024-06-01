@@ -12,6 +12,8 @@ t_minishell	*new_list(void)
 	new->nb_in = 0;
 	new->nb_out = 0;
 	new->next = NULL;
+	new->temp_name = NULL;
+	new->heredoc = NULL;
 	return (new);
 }
 
@@ -27,12 +29,15 @@ void	add_back(t_minishell *ms)
 
 void	ft_free_ms(t_minishell *ms)
 {
-	while (ms)
+	t_minishell	*ms_dup;
+
+	while (ms->next) // CHANGE AVANT C'ETAIT MS JUSTE MAIS PB SUR LA RETURN VALUE A VOIR VALGRIND
 	{
+		ms_dup = ms->next;
 		free(ms->arg);
 		free(ms->in);
 		free(ms->out);
 		free(ms);
-		ms = ms->next;
+		ms = ms_dup;
 	}
 }

@@ -34,10 +34,13 @@ void	print_list_pars(t_li_line *li)
 
 void	ft_free_li(t_li_line *li)
 {
-	while (li)
+	t_li_line *li_dup;
+
+	while (li != NULL)
 	{
+		li_dup = li->next;
 		free(li->token.str);
 		free(li);
-		li = li->next;
+		li = li_dup;
 	}
 }

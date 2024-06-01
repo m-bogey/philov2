@@ -37,7 +37,9 @@ SRC_FILES = main.c \
 			builtins_cd.c \
 			builtins_exit.c \
 			builtins_unset.c \
-			remove_quote.c
+			remove_quote.c \
+			sig.c \
+			pre_parsing.c
 
 
 INCLUDES = includes

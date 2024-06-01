@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "path.h"
+#include "mini_shell.h"
 
 static size_t	strlen_space(char *s1);
 

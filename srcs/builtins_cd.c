@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbogey <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 19:20:58 by mbogey            #+#    #+#             */
-/*   Updated: 2024/05/07 19:21:00 by mbogey           ###   ########.fr       */
+/*   Updated: 2024/05/16 19:53:39 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static int	get_pwd(t_li_line *li_env, char *str, int size)
 		if (ft_strncmp(li_env->token.str, str, size) == 0)
 		{
 			new_oldpwd = getcwd(NULL, 0);
+			if (new_oldpwd == NULL)
+				return (-2);
 			new_oldpwd = ft_strjoin(str, new_oldpwd);
 			if (new_oldpwd == NULL)
 				return (-1);
@@ -35,7 +37,7 @@ static int	get_pwd(t_li_line *li_env, char *str, int size)
 	return (0);
 }
 
-int	change_directory(t_minishell *ms, t_li_line *li_env)
+int	change_directory(t_minishell *ms, t_li_line *li_env, t_err *err)
 {
 	char	*str;
 
@@ -60,5 +62,6 @@ int	change_directory(t_minishell *ms, t_li_line *li_env)
 		perror("cd");
 		return (-1);
 	}
+	err->err = 0;
 	return (0);
 }

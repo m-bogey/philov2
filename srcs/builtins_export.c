@@ -40,7 +40,7 @@ static void	print_export(char **env)
 	}
 }
 
-void	export(t_minishell *ms, t_li_line *li_env, char **env)
+void	export(t_minishell *ms, t_li_line *li_env, char **env, t_err *err)
 {
 	size_t		i;
 	t_token		token;
@@ -67,4 +67,5 @@ void	export(t_minishell *ms, t_li_line *li_env, char **env)
 		add_back_pars(li_env, &token);
 		i++;
 	}
+	err->err = 0;
 }
