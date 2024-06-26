@@ -10,12 +10,13 @@ static void	assign_forks(t_philo *philo, t_fork *forks, int i)
 
 	philo->left_fork = &forks[i];
 	philo->right_fork = &forks[(i + 1) % philo_nbr];
+	//printf("i = %d mod = %d\n", i , (i + 1) % philo_nbr);
 }
 
 static void	philo_init(t_table *table)
 {
 	long	i;
-	t_philo *philo;
+	t_philo	*philo;
 
 	i = 0;
 	while (i < table->philo_nbr)
@@ -25,7 +26,6 @@ static void	philo_init(t_table *table)
 		philo->full = false;
 		philo->meals_counter = 0;
 		philo->table = table;
-		
 		assign_forks(philo, table->forks, i);
 		i++;
 	}
@@ -48,28 +48,28 @@ void	init_table(int ac, char **av, t_table *table)
 	table->start_simulation = -1;
 	table->end_simulation = false;
 	table->philos = safe_malloc(sizeof(t_philo) * table->philo_nbr);
-	safe_mutex(&table->table_mutex, INIT);
+	//safe_mutex(&table->table_mutex, INIT);
 	table->forks = safe_malloc(sizeof(t_fork) * table->philo_nbr);
 	while (i < table->philo_nbr)
 	{
 		safe_mutex(&table->forks[i].fork, INIT);
-		table->forks[i].fork_id = i; //super for debug
+		table->forks[i].is_available = true;
 		i++;
 	}
 	philo_init(table);
 }
 
-static long    ft_atol(char *str)
+static long	ft_atol(char *str)
 {
-    size_t  i;
-    long    nb;
+	size_t	i;
+	long	nb;
 
-    i = 0;
-    nb = 0;
-    while (str[i])
-    {
-        nb = (nb * 10) + (str[i] - 48); 
-        i++;
-    }
-    return (nb);
+	i = 0;
+	nb = 0;
+	while (str[i])
+	{
+		nb = (nb * 10) + (str[i] - 48); 
+		i++;
+	}
+	return (nb);
 }

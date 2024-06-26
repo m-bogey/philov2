@@ -31,7 +31,7 @@ typedef enum	e_code
 typedef struct	s_fork
 {
 	t_mtx	fork;
-	int		fork_id;
+	bool	is_available;
 }				t_fork;
 
 typedef struct	s_philo
@@ -48,7 +48,8 @@ typedef struct	s_philo
 
 typedef struct s_table
 {
-		//t_mtx	mutex;
+		t_mtx	mutex;
+		long	time;
 		long	philo_nbr;
 		long	time_to_die;
 		long	time_to_eat;
@@ -57,7 +58,6 @@ typedef struct s_table
 		long	start_simulation;
 		bool	end_simulation; // philo dies or all philos full
 		bool	all_threads_ready; // attendre que tout les threads soit pret
-		t_mtx	table_mutex;
 		t_fork	*forks; // array forks
 		t_philo	*philos; // array thinks
 }				t_table;
@@ -67,6 +67,7 @@ void	parsing(int ac, char **av);
 void    init_table(int ac, char **av, t_table *table);
 void	*safe_malloc(size_t bytes);
 void	safe_mutex(t_mtx *mutex, t_code code);
+void	safe_printf(t_philo *philo, char *s);
 long	gettime(t_table *table);
 void    dinner_start(t_table *table);
 #endif
