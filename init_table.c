@@ -8,11 +8,8 @@ static void	assign_forks(t_philo *philo, t_fork *forks, int i)
 
 	philo_nbr = philo->table->philo_nbr;
 
-	if (philo->id % 2 == 0)
-	{
-		philo->left_fork = &forks[i];
-		philo->right_fork = &forks[(i + 1) % philo_nbr];
-	}
+	philo->left_fork = &forks[i];
+	philo->right_fork = &forks[(i + 1) % philo_nbr];
 }
 
 static void	philo_init(t_table *table)

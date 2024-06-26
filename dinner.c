@@ -1,46 +1,65 @@
 #include "philo.h"
 
-pthread_mutex_t test;
+void	think(t_philo *philo)
+{
+	long	time;
+
+	time = gettime(philo->table);
+	printf("%ld %d is thinking\n", time, philo->id);
+}
+
+void    eat(t_philo *philo)
+{
+    long    time;
+
+	time = gettime(philo->table);
+	pthread_mutex_lock(&philo->left_fork->fork);
+    printf("%ld %d has taken left fork\n", time, philo->id);
+    pthread_mutex_lock(&philo->right_fork->fork);
+    printf("%ld %d has taken right fork\n", time, philo->id);
+    usleep(philo->table->time_to_eat);
+	printf("%ld %d is eating\n", time, philo->id);
+	philo->meals_counter++;
+	if (philo->meals_counter >= philo->table->nbr_limit_meals
+		&& philo->table->nbr_limit_meals != -1)
+		philo->full = true;
+    pthread_mutex_unlock(&philo->right_fork->fork);
+    pthread_mutex_unlock(&philo->left_fork->fork);
+}
+
+void	sleeping(t_philo *philo)
+{
+	long	time;
+
+	time = gettime(philo->table);
+	usleep(philo->table->time_to_sleep);
+	printf("%ld %d is sleeping\n", time, philo->id);
+}
 
 void    *routine(void *arg)
 {
     t_philo *philo;
-    long    time;
 
     philo = (t_philo *)arg;
-    printf("salut\n");
-  //  wait_all_threads();//TODO
 	while (1)
 	{
 	//	if (philo->full)
 	//		break ;
-        time = gettime(philo->table);
-  //      pthread_mutex_lock(&test);
-        if (&philo->left_fork->fork && &philo->right_fork->fork)
-        {
-        pthread_mutex_lock(&philo->left_fork->fork);
-        printf("%ld %d has taken left fork\n", time, philo->id);
-        pthread_mutex_lock(&philo->right_fork->fork);
-        printf("%ld %d has taken right fork\n", time, philo->id);
-        usleep(philo->table->time_to_eat);
-		printf("%ld %d is eating\n", time, philo->id);
-        pthread_mutex_unlock(&philo->right_fork->fork);
-        pthread_mutex_unlock(&philo->left_fork->fork);
-        }
-        time = gettime(philo->table);
-        usleep(philo->table->time_to_sleep);
-        printf("%ld %d is sleeping\n", time, philo->id);
-    //    pthread_mutex_unlock(&test);
+		think(philo);
+		eat(philo);
+		if (philo->full == true)
+			break;
+		sleeping(philo);
 	}
 
     return (NULL);
 }
+
 void    dinner_start(t_table *table)
 {
     int i;
 
     i = -1;
-    pthread_mutex_init(&test, NULL);
     if (table->nbr_limit_meals == 0)
         return ;
     else if (table->philo_nbr == 1)
@@ -56,6 +75,4 @@ void    dinner_start(t_table *table)
     i = -1;
     while (++i < table->philo_nbr)
         pthread_join(table->philos[i].thread_id, NULL);
-
-    pthread_mutex_destroy(&test);
 }
