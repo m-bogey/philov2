@@ -12,6 +12,10 @@ SRC_FILES = main.c \
 			parsing.c \
 			init.c \
 			start_simulation.c \
+			getime.c \
+			print_mutex.c \
+			routine.c \
+			usleep_with_check_die.c
 
 SRC = $(addprefix $(SRC_DIR)/, SRC_FILES)
 
