@@ -31,10 +31,11 @@ void	init(t_table *table, int argc, char **argv)
 	table->time_to_eat = ft_atol(argv[3]) * 1000;
 	table->time_to_sleep = ft_atol(argv[4]) * 1000;
 	if (argc == 6)
-		table->nb_meals = ft_atol(argv[4]);
+		table->nb_meals = ft_atol(argv[5]);
 	else
 		table->nb_meals = -1;
 	table->end_simulation = false;
+	table->can_write = true;
 	table->philos = malloc(sizeof(t_philo) * table->nb_philo);
 	table->forks = malloc(sizeof(t_fork) * table->nb_philo);
 	init_mutex(table);

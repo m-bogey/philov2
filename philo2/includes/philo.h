@@ -44,6 +44,7 @@ typedef struct s_table
 	t_philo			*philos;
 	pthread_mutex_t	mutex_print;
 	bool			end_simulation;
+	bool			can_write;
 }				t_table;
 
 int		parsing(int argc, char **argv);
@@ -53,6 +54,6 @@ long	getime(t_table *table);
 void	*routine(void *arg);
 void	usleep_with_check_die(long usec, t_table *table);
 void	print_mutex(t_philo *philo, char *str);
-
+void	*check_end_simulation(void *arg);
 
 #endif

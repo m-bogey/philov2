@@ -1,31 +1,5 @@
 #include "philo.h"
 
-void	*check_end(void *arg)
-{
-	t_table *table;
-	int		i;
-
-	table = (t_table *)arg;
-	//check si tout les philo run
-	usleep(500);
-	while (1)
-	{
-		i = 0;
-		while (i < table->nb_philo)
-		{
-			if (check_philo(table->philos + i) == true)
-			{
-				table->end_simulation = true;
-				print_mutex(table->philos, " died\n");
-				break ;
-			}
-		}
-		usleep(10);
-	}
-
-	return (NULL);
-}
-
 void	start_simulation(t_table *table)
 {
 	int i;
@@ -41,7 +15,7 @@ void	start_simulation(t_table *table)
     table->start_time = getime(table);
 	
 	pthread_create(&table->check_philos, NULL,
-		&check_end, table);
+		&check_end_simulation, table);
 
     i = 0;
     while (i < table->nb_philo)
@@ -51,7 +25,3 @@ void	start_simulation(t_table *table)
 	}
 	pthread_join(table->check_philos, NULL);
 }
-
-
-
-//pthread_create(&table->tables[i].thread_id, NULL, &routine, &table->tables[i]);
