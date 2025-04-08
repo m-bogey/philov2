@@ -1,28 +1,9 @@
 #include "philo.h"
 
 static long		ft_atol(char *str);
-static void 	init_mutex(t_table *table);
+static void		init_mutex(t_table *table);
+static void		init_philo(t_table *table);
 static void		what_fork(t_philo *philo, t_fork *forks, long i, int nb_philo);
-
-
-static void		init_philo(t_table *table)
-{
-	t_philo	*philo;
-	long	j;
-
-	j = 0;
-	while (j < table->nb_philo)
-	{
-		philo = table->philos + j;
-		philo->table = table;
-		philo->id = j + 1;
-		philo->count_meals = 0;
-		philo->full = false;
-		philo->time_last_meal = 0;
-		what_fork(philo, table->forks, j, table->nb_philo);
-		j++;
-	}
-}
 
 void	init(t_table *table, int argc, char **argv)
 {
@@ -36,8 +17,17 @@ void	init(t_table *table, int argc, char **argv)
 		table->nb_meals = -1;
 	table->end_simulation = false;
 	table->can_write = true;
+
+	table->start_time = -1;
+	table->philos_ready = false;
+	table->philos = NULL;
+	table->forks = NULL;
 	table->philos = malloc(sizeof(t_philo) * table->nb_philo);
+	if (!table->philos)
+		exit_clean(table);
 	table->forks = malloc(sizeof(t_fork) * table->nb_philo);
+	if (!table->forks)
+		exit_clean(table);
 	init_mutex(table);
 	init_philo(table);
 }
@@ -64,13 +54,41 @@ static void	init_mutex(t_table *table)
 	i = 0;
 	while (i < table->nb_philo)
 	{
-		pthread_mutex_init(&table->forks[i].fork, NULL);
+		table->forks[i].init = 0;
+		if (pthread_mutex_init(&table->forks[i].fork, NULL) != 0)
+			exit_clean(table);
 		table->forks[i].can_use = true;
+		table->forks[i].init = 1;
 		i++;
 	}
-	pthread_mutex_init(&table->mutex_print, NULL);
+	table->mutex_print_init = 0;
+	if (pthread_mutex_init(&table->mutex_print, NULL) != 0)
+		exit_clean(table);
+	table->mutex_print_init = 1;
+	table->mutex_ready_init = 0;
+	if (pthread_mutex_init(&table->mutex_ready, NULL) != 0)
+		exit_clean(table);
+	table->mutex_ready_init = 1;
 }
 
+static void		init_philo(t_table *table)
+{
+	t_philo	*philo;
+	long	j;
+
+	j = 0;
+	while (j < table->nb_philo)
+	{
+		philo = table->philos + j;
+		philo->table = table;
+		philo->id = j + 1;
+		philo->count_meals = 0;
+		philo->full = false;
+		philo->time_last_meal = 0;
+		what_fork(philo, table->forks, j, table->nb_philo);
+		j++;
+	}
+}
 static void		what_fork(t_philo *philo, t_fork *forks, long i, int nb_philo)
 {
 	int	j;

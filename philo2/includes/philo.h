@@ -14,6 +14,7 @@ typedef struct s_fork
 {
 	pthread_mutex_t	fork;
 	bool			can_use;
+	int				init;
 }				t_fork;
 
 typedef struct s_table t_table;
@@ -43,8 +44,12 @@ typedef struct s_table
 	t_fork			*forks;
 	t_philo			*philos;
 	pthread_mutex_t	mutex_print;
+	int				mutex_print_init;
 	bool			end_simulation;
 	bool			can_write;
+	bool			philos_ready;
+	pthread_mutex_t	mutex_ready;
+	int				mutex_ready_init;
 }				t_table;
 
 int		parsing(int argc, char **argv);
@@ -55,5 +60,9 @@ void	*routine(void *arg);
 void	usleep_with_check_die(long usec, t_table *table);
 void	print_mutex(t_philo *philo, char *str);
 void	*check_end_simulation(void *arg);
+
+bool	wait_for_begin(t_table *table);
+void	clean(t_table *table);
+void	exit_clean(t_table *table);
 
 #endif

@@ -23,9 +23,9 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	//attendre tout les philos
-	//voir le temps
-	usleep(500);
+	while (wait_for_begin(philo->table) == false)
+		usleep(5);
+	//usleep(500);
 	if (philo->id % 2 == 0)
 	{
 		print_mutex(philo, " is thinking\n");
@@ -36,7 +36,7 @@ void	*routine(void *arg)
 		if (philo->table->end_simulation == true)
 			break ;
 		if (philo->full == true)
-			break;
+			break ;
 		eating(philo);
 		sleeping(philo);
 		thinking(philo);

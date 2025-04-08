@@ -8,5 +8,6 @@ int	main(int argc, char **argv)
 		return (1);
 	init(&table, argc, argv);
 	start_simulation(&table);
+	clean(&table);
 	return (0);
 }

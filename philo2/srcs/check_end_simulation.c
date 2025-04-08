@@ -8,8 +8,8 @@ void	*check_end_simulation(void *arg)
 	int		i;
 
 	table = (t_table *)arg;
-	//check si tout les philo run
-	usleep(500);
+	 while (wait_for_begin(table) == false)
+	 	usleep(5);
 	while (1)
 	{
 		if (table->end_simulation == true)

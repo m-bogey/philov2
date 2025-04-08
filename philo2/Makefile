@@ -1,6 +1,6 @@
 NAME = philo
 
-CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES)#-fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) #-fsanitize=thread
 
 SRC_DIR = srcs
 
@@ -16,7 +16,9 @@ SRC_FILES = main.c \
 			print_mutex.c \
 			routine.c \
 			usleep_with_check_die.c \
-			check_end_simulation.c
+			check_end_simulation.c \
+			wait_for_begin.c \
+			clean.c
 
 SRC = $(addprefix $(SRC_DIR)/, SRC_FILES)
 
