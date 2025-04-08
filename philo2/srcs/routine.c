@@ -40,7 +40,6 @@ void	*routine(void *arg)
 		eating(philo);
 		sleeping(philo);
 		thinking(philo);
-		printf("---------------\n| nb meals = %ld   philo id: %d count meal = %ld |\n---------------\n", philo->table->nb_meals, philo->id, philo->count_meals);
 	}
 	return (NULL);
 }

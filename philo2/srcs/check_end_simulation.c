@@ -1,19 +1,6 @@
 #include "philo.h"
 
-static bool	check_philo_die(t_philo *philo)
-{
-	long	t;
-	
-	t = getime(philo->table) - philo->time_last_meal;
-	if (t > philo->table->time_to_die / 1000)
-	{
-		philo->table->end_simulation = true;
-		print_mutex(philo->table->philos, " died\n");
-		philo->table->can_write = false;
-		return (true);
-	}
-	return (false);
-}
+static bool	check_philo_die(t_philo *philo);
 
 void	*check_end_simulation(void *arg)
 {
@@ -36,4 +23,19 @@ void	*check_end_simulation(void *arg)
 		usleep(10);
 	}
 	return (NULL);
+}
+
+static bool	check_philo_die(t_philo *philo)
+{
+	long	t;
+	
+	t = getime(philo->table) - philo->time_last_meal;
+	if (t > philo->table->time_to_die / 1000)
+	{
+		philo->table->end_simulation = true;
+		print_mutex(philo->table->philos, " died\n");
+		philo->table->can_write = false;
+		return (true);
+	}
+	return (false);
 }

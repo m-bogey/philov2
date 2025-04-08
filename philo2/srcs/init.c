@@ -68,6 +68,7 @@ static void	init_mutex(t_table *table)
 		table->forks[i].can_use = true;
 		i++;
 	}
+	pthread_mutex_init(&table->mutex_print, NULL);
 }
 
 static void		what_fork(t_philo *philo, t_fork *forks, long i, int nb_philo)
