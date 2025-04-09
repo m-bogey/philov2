@@ -15,7 +15,9 @@ void	start_simulation(t_table *table)
 	pthread_create(&table->check_philos, NULL,
 		&check_end_simulation, table);
 
+	pthread_mutex_lock(&table->mutex_ready);
 	table->philos_ready = true;
+	pthread_mutex_unlock(&table->mutex_ready);
 
 	i = 0;
 	while (i < table->nb_philo)

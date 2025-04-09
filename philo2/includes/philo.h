@@ -46,10 +46,22 @@ typedef struct s_table
 	pthread_mutex_t	mutex_print;
 	int				mutex_print_init;
 	bool			end_simulation;
+	pthread_mutex_t	mutex_end;
+	int				mutex_end_init;
 	bool			can_write;
 	bool			philos_ready;
 	pthread_mutex_t	mutex_ready;
 	int				mutex_ready_init;
+	pthread_mutex_t	mutex_meal;
+	int				mutex_meal_init;
+	pthread_mutex_t	mutex_full;
+	int				mutex_full_init;
+	pthread_mutex_t	mutex_time;
+	int				mutex_time_init;
+	pthread_mutex_t	mutex_end_sim;
+	int				mutex_end_sim_init;
+	pthread_mutex_t	mutex_canwrite;
+	int				mutex_canwrite_init;
 }				t_table;
 
 int		parsing(int argc, char **argv);

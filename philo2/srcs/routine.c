@@ -33,10 +33,14 @@ void	*routine(void *arg)
 	}
 	while (1)
 	{
+		pthread_mutex_lock(&philo->table->mutex_end_sim);
 		if (philo->table->end_simulation == true)
 			break ;
+		pthread_mutex_unlock(&philo->table->mutex_end_sim);
+		pthread_mutex_lock(&philo->table->mutex_full);
 		if (philo->full == true)
 			break ;
+		pthread_mutex_unlock(&philo->table->mutex_full);
 		eating(philo);
 		sleeping(philo);
 		thinking(philo);
@@ -57,13 +61,20 @@ static void	eating(t_philo *philo)
 			philo->right_fork->can_use = false;
 			print_mutex(philo, " has taken a fork\n");
 			
+			pthread_mutex_lock(&philo->table->mutex_meal);
 			philo->time_last_meal = getime(philo->table);
+			pthread_mutex_unlock(&philo->table->mutex_meal);
+			
 			print_mutex(philo, " is eating\n");
 			usleep_with_check_die(philo->table->time_to_eat, philo->table);
 			philo->count_meals++;
 			if (philo->table->nb_meals < philo->count_meals
 				&& philo->table->nb_meals > 0)
-				philo->full = true; // voir si mutex
+			{
+				pthread_mutex_lock(&philo->table->mutex_full);
+				philo->full = true;
+				pthread_mutex_unlock(&philo->table->mutex_full);
+			}
 
 			philo->right_fork->can_use = true;
 		}

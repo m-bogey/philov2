@@ -69,6 +69,30 @@ static void	init_mutex(t_table *table)
 	if (pthread_mutex_init(&table->mutex_ready, NULL) != 0)
 		exit_clean(table);
 	table->mutex_ready_init = 1;
+	table->mutex_end_init = 0;
+	if (pthread_mutex_init(&table->mutex_end, NULL) != 0)
+		exit_clean(table);
+	table->mutex_end_init = 1;
+	table->mutex_meal_init = 0;
+	if (pthread_mutex_init(&table->mutex_meal, NULL) != 0)
+		exit_clean(table);
+	table->mutex_meal_init = 1;
+	table->mutex_full_init = 0;
+	if (pthread_mutex_init(&table->mutex_full, NULL) != 0)
+		exit_clean(table);
+	table->mutex_full_init = 1;
+	table->mutex_time_init = 0;
+	if (pthread_mutex_init(&table->mutex_time, NULL) != 0)
+		exit_clean(table);
+	table->mutex_time_init = 1;
+	table->mutex_end_sim_init = 0;
+	if (pthread_mutex_init(&table->mutex_end_sim, NULL) != 0)
+		exit_clean(table);
+	table->mutex_end_sim_init = 1;
+	table->mutex_canwrite_init = 0;
+	if (pthread_mutex_init(&table->mutex_canwrite, NULL) != 0)
+		exit_clean(table);
+	table->mutex_canwrite_init = 1;
 }
 
 static void		init_philo(t_table *table)
