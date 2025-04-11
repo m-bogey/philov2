@@ -3,8 +3,9 @@
 void	print_mutex(t_philo *philo, char *str)
 {
 	long	time;
-
+	pthread_mutex_lock(&philo->table->mutex_time);
 	time = getime(philo->table);
+	pthread_mutex_unlock(&philo->table->mutex_time);
 	pthread_mutex_lock(&philo->table->mutex_print);
 	pthread_mutex_lock(&philo->table->mutex_canwrite);
 	if (philo->table->can_write == true)

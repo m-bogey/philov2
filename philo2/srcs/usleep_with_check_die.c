@@ -14,7 +14,10 @@ void	usleep_with_check_die(long usec, t_table *table)
 	{
 		pthread_mutex_lock(&table->mutex_end_sim);
 		if (table->end_simulation == true)
+		{
+			pthread_mutex_unlock(&table->mutex_end_sim);
 			break ;
+		}
 		pthread_mutex_unlock(&table->mutex_end_sim);
 		// quitter si simulation fini
 		usleep(50);

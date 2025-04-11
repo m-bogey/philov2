@@ -24,7 +24,7 @@ void	clean(t_table *table)
 	if (table->mutex_time_init == 1)
 		pthread_mutex_destroy(&table->mutex_time);
 	if (table->mutex_end_sim_init == 1)
-		pthread_mutex_destroy(&table->mutex_end);
+		pthread_mutex_destroy(&table->mutex_end_sim);
 	if (table->mutex_canwrite_init == 1)
 		pthread_mutex_destroy(&table->mutex_canwrite);
 	if (table->philos != NULL)
