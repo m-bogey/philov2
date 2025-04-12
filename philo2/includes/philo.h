@@ -10,6 +10,13 @@
 # include <stdbool.h>
 # include <pthread.h>
 
+typedef struct s_my_mutex
+{
+	pthread_mutex_t	m;
+	int				m_init;
+}				t_my_mutex;
+
+
 typedef struct s_fork
 {
 	pthread_mutex_t	fork;
@@ -25,10 +32,12 @@ typedef struct s_philo
 	pthread_t	id_thread;
 	int			id;
 	long		count_meals;
-	bool		full;
-	long		time_last_meal;
 	t_fork		*left_fork;
 	t_fork		*right_fork;
+	t_my_mutex	mutex_full;
+	bool		full;
+	t_my_mutex	mutex_time_last_meal;
+	long		time_last_meal;
 }				t_philo;
 
 
@@ -40,28 +49,18 @@ typedef struct s_table
 	long			time_to_eat;
 	long			time_to_sleep;
 	long			nb_meals;
-	long			start_time;
 	t_fork			*forks;
 	t_philo			*philos;
-	pthread_mutex_t	mutex_print;
-	int				mutex_print_init;
-	bool			end_simulation;
-	pthread_mutex_t	mutex_end;
-	int				mutex_end_init;
-	bool			can_write;
+
+	t_my_mutex		mutex_print;
+	t_my_mutex		mutex_ready;
 	bool			philos_ready;
-	pthread_mutex_t	mutex_ready;
-	int				mutex_ready_init;
-	pthread_mutex_t	mutex_meal;
-	int				mutex_meal_init;
-	pthread_mutex_t	mutex_full;
-	int				mutex_full_init;
-	pthread_mutex_t	mutex_time;
-	int				mutex_time_init;
-	pthread_mutex_t	mutex_end_sim;
-	int				mutex_end_sim_init;
-	pthread_mutex_t	mutex_canwrite;
-	int				mutex_canwrite_init;
+	t_my_mutex		mutex_end;
+	bool			end_simulation;
+	t_my_mutex		mutex_start_time;
+	long			start_time;
+	t_my_mutex		mutex_can_write;
+	bool			can_write;
 }				t_table;
 
 int		parsing(int argc, char **argv);
@@ -76,5 +75,8 @@ void	*check_end_simulation(void *arg);
 bool	wait_for_begin(t_table *table);
 void	clean(t_table *table);
 void	exit_clean(t_table *table);
+
+void	safe_init_mutex(t_table *table, t_my_mutex *my_mutex);
+void	safe_init_fork(t_table *table, t_fork *f);
 
 #endif

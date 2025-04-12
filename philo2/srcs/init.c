@@ -54,45 +54,16 @@ static void	init_mutex(t_table *table)
 	i = 0;
 	while (i < table->nb_philo)
 	{
-		table->forks[i].init = 0;
-		if (pthread_mutex_init(&table->forks[i].fork, NULL) != 0)
-			exit_clean(table);
-		table->forks[i].can_use = true;
-		table->forks[i].init = 1;
+		safe_init_fork(table, &table->forks[i]);
+		safe_init_mutex(table, &table->philos[i].mutex_full);
+		safe_init_mutex(table, &table->philos[i].mutex_time_last_meal);
 		i++;
 	}
-	table->mutex_print_init = 0;
-	if (pthread_mutex_init(&table->mutex_print, NULL) != 0)
-		exit_clean(table);
-	table->mutex_print_init = 1;
-	table->mutex_ready_init = 0;
-	if (pthread_mutex_init(&table->mutex_ready, NULL) != 0)
-		exit_clean(table);
-	table->mutex_ready_init = 1;
-	table->mutex_end_init = 0;
-	if (pthread_mutex_init(&table->mutex_end, NULL) != 0)
-		exit_clean(table);
-	table->mutex_end_init = 1;
-	table->mutex_meal_init = 0;
-	if (pthread_mutex_init(&table->mutex_meal, NULL) != 0)
-		exit_clean(table);
-	table->mutex_meal_init = 1;
-	table->mutex_full_init = 0;
-	if (pthread_mutex_init(&table->mutex_full, NULL) != 0)
-		exit_clean(table);
-	table->mutex_full_init = 1;
-	table->mutex_time_init = 0;
-	if (pthread_mutex_init(&table->mutex_time, NULL) != 0)
-		exit_clean(table);
-	table->mutex_time_init = 1;
-	table->mutex_end_sim_init = 0;
-	if (pthread_mutex_init(&table->mutex_end_sim, NULL) != 0)
-		exit_clean(table);
-	table->mutex_end_sim_init = 1;
-	table->mutex_canwrite_init = 0;
-	if (pthread_mutex_init(&table->mutex_canwrite, NULL) != 0)
-		exit_clean(table);
-	table->mutex_canwrite_init = 1;
+	safe_init_mutex(table, &table->mutex_print);
+	safe_init_mutex(table, &table->mutex_ready);
+	safe_init_mutex(table, &table->mutex_end);
+	safe_init_mutex(table, &table->mutex_start_time);
+	safe_init_mutex(table, &table->mutex_can_write);
 }
 
 static void		init_philo(t_table *table)

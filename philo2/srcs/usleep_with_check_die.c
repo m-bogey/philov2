@@ -12,13 +12,13 @@ void	usleep_with_check_die(long usec, t_table *table)
 	gettimeofday(&start, NULL);
 	while (t < usec)
 	{
-		pthread_mutex_lock(&table->mutex_end_sim);
+		pthread_mutex_lock(&table->mutex_end.m);
 		if (table->end_simulation == true)
 		{
-			pthread_mutex_unlock(&table->mutex_end_sim);
+			pthread_mutex_unlock(&table->mutex_end.m);
 			break ;
 		}
-		pthread_mutex_unlock(&table->mutex_end_sim);
+		pthread_mutex_unlock(&table->mutex_end.m);
 		// quitter si simulation fini
 		usleep(50);
 		gettimeofday(&end, NULL);

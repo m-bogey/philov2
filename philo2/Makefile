@@ -1,6 +1,6 @@
 NAME = philo
 
-CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) #-g -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) -g -fsanitize=thread
 
 SRC_DIR = srcs
 
@@ -18,7 +18,8 @@ SRC_FILES = main.c \
 			usleep_with_check_die.c \
 			check_end_simulation.c \
 			wait_for_begin.c \
-			clean.c
+			clean.c \
+			safe_init_mutex.c
 
 SRC = $(addprefix $(SRC_DIR)/, SRC_FILES)
 
@@ -29,7 +30,7 @@ DEPS = $(OBJ:.o=.d)
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-		$(CC) -o $(NAME) $(OBJ)
+		$(CC) -o $(NAME) $(OBJ) -fsanitize=thread
 
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -MMD -MP -o $@ -c $<
