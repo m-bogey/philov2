@@ -1,6 +1,6 @@
 NAME = philo
 
-CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) -g -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) #-g -fsanitize=thread
 
 SRC_DIR = srcs
 
@@ -30,7 +30,7 @@ DEPS = $(OBJ:.o=.d)
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-		$(CC) -o $(NAME) $(OBJ) -fsanitize=thread
+		$(CC) -o $(NAME) $(OBJ)
 
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -MMD -MP -o $@ -c $<
