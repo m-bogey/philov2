@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/12 19:18:45 by mbogey            #+#    #+#             */
+/*   Updated: 2025/04/12 19:24:28 by mbogey           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static long		ft_atol(char *str);
@@ -17,7 +29,6 @@ void	init(t_table *table, int argc, char **argv)
 		table->nb_meals = -1;
 	table->end_simulation = false;
 	table->can_write = true;
-
 	table->start_time = -1;
 	table->philos_ready = false;
 	table->philos = NULL;
@@ -32,7 +43,7 @@ void	init(t_table *table, int argc, char **argv)
 	init_philo(table);
 }
 
-static long		ft_atol(char *str)
+static long	ft_atol(char *str)
 {
 	int		i;
 	long	nb;
@@ -66,7 +77,7 @@ static void	init_mutex(t_table *table)
 	safe_init_mutex(table, &table->mutex_can_write);
 }
 
-static void		init_philo(t_table *table)
+static void	init_philo(t_table *table)
 {
 	t_philo	*philo;
 	long	j;
@@ -84,7 +95,8 @@ static void		init_philo(t_table *table)
 		j++;
 	}
 }
-static void		what_fork(t_philo *philo, t_fork *forks, long i, int nb_philo)
+
+static void	what_fork(t_philo *philo, t_fork *forks, long i, int nb_philo)
 {
 	int	j;
 

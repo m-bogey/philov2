@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbogey <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/12 19:17:42 by mbogey            #+#    #+#             */
+/*   Updated: 2025/04/12 19:17:49 by mbogey           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -16,7 +28,6 @@ typedef struct s_my_mutex
 	int				m_init;
 }				t_my_mutex;
 
-
 typedef struct s_fork
 {
 	pthread_mutex_t	fork;
@@ -24,7 +35,7 @@ typedef struct s_fork
 	int				init;
 }				t_fork;
 
-typedef struct s_table t_table;
+typedef struct s_table	t_table;
 
 typedef struct s_philo
 {
@@ -39,7 +50,6 @@ typedef struct s_philo
 	t_my_mutex	mutex_time_last_meal;
 	long		time_last_meal;
 }				t_philo;
-
 
 typedef struct s_table
 {

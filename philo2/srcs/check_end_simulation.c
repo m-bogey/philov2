@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_end_simulation.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/12 19:18:10 by mbogey            #+#    #+#             */
+/*   Updated: 2025/04/12 19:21:41 by mbogey           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static bool	check_philo_die(t_philo *philo);
@@ -38,7 +50,6 @@ static bool	check_philo_die(t_philo *philo)
 	pthread_mutex_lock(&philo->table->mutex_start_time.m);
 	t = getime(philo->table);
 	pthread_mutex_unlock(&philo->table->mutex_start_time.m);
-
 	pthread_mutex_lock(&philo->mutex_time_last_meal.m);
 	t = t - philo->time_last_meal;
 	pthread_mutex_unlock(&philo->mutex_time_last_meal.m);
