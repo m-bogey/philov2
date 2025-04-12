@@ -6,37 +6,14 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:18:10 by mbogey            #+#    #+#             */
-/*   Updated: 2025/04/12 20:58:25 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/04/12 21:00:16 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 static bool	check_philo_die(t_philo *philo);
-
-static int	set_tab(t_table *table, int *i, int *count_meals)
-{
-	if (*count_meals == table->nb_philo)
-	{
-		pthread_mutex_lock(&table->mutex_end.m);
-		table->end_simulation = true;
-		pthread_mutex_unlock(&table->mutex_end.m);
-		print_mutex(table->philos, " all philos full\n");
-		pthread_mutex_lock(&table->mutex_can_write.m);
-		table->can_write = false;
-		pthread_mutex_unlock(&table->mutex_can_write.m);
-	}
-	pthread_mutex_lock(&table->mutex_end.m);
-	if (table->end_simulation == true)
-	{
-		pthread_mutex_unlock(&table->mutex_end.m);
-		return (1);
-	}
-	pthread_mutex_unlock(&table->mutex_end.m);
-	*i = 0;
-	*count_meals = 0;
-	return (0);
-}
+static int	set_tab(t_table *table, int *i, int *count_meals);
 
 void	*check_end_simulation(void *arg)
 {
@@ -89,4 +66,28 @@ static bool	check_philo_die(t_philo *philo)
 		return (true);
 	}
 	return (false);
+}
+
+static int	set_tab(t_table *table, int *i, int *count_meals)
+{
+	if (*count_meals == table->nb_philo)
+	{
+		pthread_mutex_lock(&table->mutex_end.m);
+		table->end_simulation = true;
+		pthread_mutex_unlock(&table->mutex_end.m);
+		print_mutex(table->philos, " all philos full\n");
+		pthread_mutex_lock(&table->mutex_can_write.m);
+		table->can_write = false;
+		pthread_mutex_unlock(&table->mutex_can_write.m);
+	}
+	pthread_mutex_lock(&table->mutex_end.m);
+	if (table->end_simulation == true)
+	{
+		pthread_mutex_unlock(&table->mutex_end.m);
+		return (1);
+	}
+	pthread_mutex_unlock(&table->mutex_end.m);
+	*i = 0;
+	*count_meals = 0;
+	return (0);
 }
