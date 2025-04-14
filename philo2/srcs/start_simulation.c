@@ -6,7 +6,7 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:19:39 by mbogey            #+#    #+#             */
-/*   Updated: 2025/04/12 20:45:08 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/04/14 15:43:29 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	*one_philo(void *arg)
 
 int	special_simulation(t_table *table)
 {
-	(void)table;
 	if (table->nb_philo == 0 || table->nb_meals == 0)
 		return (1);
 	if (table->nb_philo == 1)

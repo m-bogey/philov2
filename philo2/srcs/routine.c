@@ -6,7 +6,7 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:19:20 by mbogey            #+#    #+#             */
-/*   Updated: 2025/04/12 20:42:19 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/04/14 14:45:22 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static void	to_do_eat(t_philo *philo)
 	print_mutex(philo, " is eating\n");
 	usleep_with_check_die(philo->table->time_to_eat, philo->table);
 	philo->count_meals++;
-	if (philo->table->nb_meals < philo->count_meals
+	if (philo->table->nb_meals <= philo->count_meals
 		&& philo->table->nb_meals > 0)
 	{
 		pthread_mutex_lock(&philo->mutex_full.m);

@@ -6,7 +6,7 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:18:10 by mbogey            #+#    #+#             */
-/*   Updated: 2025/04/12 21:00:16 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/04/14 14:30:06 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ static int	set_tab(t_table *table, int *i, int *count_meals)
 		pthread_mutex_lock(&table->mutex_end.m);
 		table->end_simulation = true;
 		pthread_mutex_unlock(&table->mutex_end.m);
-		print_mutex(table->philos, " all philos full\n");
 		pthread_mutex_lock(&table->mutex_can_write.m);
 		table->can_write = false;
 		pthread_mutex_unlock(&table->mutex_can_write.m);

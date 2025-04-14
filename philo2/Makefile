@@ -1,6 +1,6 @@
 NAME = philo
 
-CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) #-g -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) # -fsanitize=thread
 
 SRC_DIR = srcs
 

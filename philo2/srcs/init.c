@@ -6,18 +6,18 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:18:45 by mbogey            #+#    #+#             */
-/*   Updated: 2025/04/12 19:24:28 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/04/14 16:12:28 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 static long		ft_atol(char *str);
-static void		init_mutex(t_table *table);
+static int		init_mutex(t_table *table);
 static void		init_philo(t_table *table);
 static void		what_fork(t_philo *philo, t_fork *forks, long i, int nb_philo);
 
-void	init(t_table *table, int argc, char **argv)
+int	init(t_table *table, int argc, char **argv)
 {
 	table->nb_philo = ft_atol(argv[1]);
 	table->time_to_die = ft_atol(argv[2]) * 1000;
@@ -35,12 +35,14 @@ void	init(t_table *table, int argc, char **argv)
 	table->forks = NULL;
 	table->philos = malloc(sizeof(t_philo) * table->nb_philo);
 	if (!table->philos)
-		exit_clean(table);
+		return (-1);
 	table->forks = malloc(sizeof(t_fork) * table->nb_philo);
 	if (!table->forks)
-		exit_clean(table);
-	init_mutex(table);
+		return (-1);
+	if (init_mutex(table) == -1)
+		return (-1);
 	init_philo(table);
+	return (0);
 }
 
 static long	ft_atol(char *str)
@@ -58,23 +60,32 @@ static long	ft_atol(char *str)
 	return (nb);
 }
 
-static void	init_mutex(t_table *table)
+static int	init_mutex(t_table *table)
 {
 	int	i;
 
 	i = 0;
 	while (i < table->nb_philo)
 	{
-		safe_init_fork(table, &table->forks[i]);
-		safe_init_mutex(table, &table->philos[i].mutex_full);
-		safe_init_mutex(table, &table->philos[i].mutex_time_last_meal);
+		if (safe_init_fork(&table->forks[i]) == -1)
+			return (-1);
+		if (safe_init_mutex(&table->philos[i].mutex_full) == -1)
+			return (-1);
+		if (safe_init_mutex(&table->philos[i].mutex_time_last_meal) == -1)
+			return (-1);
 		i++;
 	}
-	safe_init_mutex(table, &table->mutex_print);
-	safe_init_mutex(table, &table->mutex_ready);
-	safe_init_mutex(table, &table->mutex_end);
-	safe_init_mutex(table, &table->mutex_start_time);
-	safe_init_mutex(table, &table->mutex_can_write);
+	if (safe_init_mutex(&table->mutex_print) == -1)
+		return (-1);
+	if (safe_init_mutex(&table->mutex_ready) == -1)
+		return (-1);
+	if (safe_init_mutex(&table->mutex_end) == -1)
+		return (-1);
+	if (safe_init_mutex(&table->mutex_start_time) == -1)
+		return (-1);
+	if (safe_init_mutex(&table->mutex_can_write) == -1)
+		return (-1);
+	return (0);
 }
 
 static void	init_philo(t_table *table)

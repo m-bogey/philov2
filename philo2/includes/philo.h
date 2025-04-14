@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbogey <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:17:42 by mbogey            #+#    #+#             */
-/*   Updated: 2025/04/12 19:17:49 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/04/14 16:21:32 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ typedef struct s_table
 }				t_table;
 
 int		parsing(int argc, char **argv);
-void	init(t_table *table, int argc, char **argv);
+int		init(t_table *table, int argc, char **argv);
 void	start_simulation(t_table *table);
 long	getime(t_table *table);
 void	*routine(void *arg);
@@ -84,9 +84,8 @@ void	*check_end_simulation(void *arg);
 
 bool	wait_for_begin(t_table *table);
 void	clean(t_table *table);
-void	exit_clean(t_table *table);
 
-void	safe_init_mutex(t_table *table, t_my_mutex *my_mutex);
-void	safe_init_fork(t_table *table, t_fork *f);
+int		safe_init_mutex(t_my_mutex *my_mutex);
+int		safe_init_fork(t_fork *f);
 
 #endif
