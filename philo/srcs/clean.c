@@ -6,7 +6,7 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:18:28 by mbogey            #+#    #+#             */
-/*   Updated: 2025/04/14 16:21:24 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/05/15 02:02:08 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ void	clean(t_table *table)
 			pthread_mutex_destroy(&table->philos[i].mutex_time_last_meal.m);
 		i++;
 	}
-	if (table->mutex_print.m_init == 1)
-		pthread_mutex_destroy(&table->mutex_print.m);
 	if (table->mutex_ready.m_init == 1)
 		pthread_mutex_destroy(&table->mutex_ready.m);
 	if (table->mutex_end.m_init == 1)

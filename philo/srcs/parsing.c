@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbogey <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:19:01 by mbogey            #+#    #+#             */
-/*   Updated: 2025/04/12 19:19:03 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/05/15 02:23:50 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static int	check_int(int argc, char **argv)
 
 static size_t	ft_strlen(char *str)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (str[i])

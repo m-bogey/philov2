@@ -6,7 +6,7 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:18:10 by mbogey            #+#    #+#             */
-/*   Updated: 2025/05/10 16:36:29 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/05/27 19:20:01 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,11 @@ static bool	check_philo_die(t_philo *philo)
 		pthread_mutex_lock(&philo->table->mutex_end.m);
 		philo->table->end_simulation = true;
 		pthread_mutex_unlock(&philo->table->mutex_end.m);
-		usleep(1000);
-		print_mutex(philo->table->philos, " died\n");
 		pthread_mutex_lock(&philo->table->mutex_can_write.m);
 		philo->table->can_write = false;
 		pthread_mutex_unlock(&philo->table->mutex_can_write.m);
+		usleep(400);
+		print_mutex_end(philo->table->philos, " died\n");
 		return (true);
 	}
 	return (false);

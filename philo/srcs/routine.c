@@ -6,7 +6,7 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:19:20 by mbogey            #+#    #+#             */
-/*   Updated: 2025/05/10 16:36:45 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/05/15 02:00:38 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	while (wait_for_begin(philo->table) == false)
 		usleep(50);
-	if (philo->id % 2 == 0)
+	if (philo->id % 2 == 0 || (philo->table->nb_philo % 2 == 1
+			&& philo->id == philo->table->nb_philo))
 	{
 		print_mutex(philo, " is thinking\n");
 		usleep(200);

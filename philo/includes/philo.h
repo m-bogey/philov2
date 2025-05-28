@@ -6,7 +6,7 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:17:42 by mbogey            #+#    #+#             */
-/*   Updated: 2025/05/10 16:40:27 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/05/27 19:19:25 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ typedef struct s_table
 	t_fork			*forks;
 	t_philo			*philos;
 
-	t_my_mutex		mutex_print;
 	t_my_mutex		mutex_ready;
 	bool			philos_ready;
 	t_my_mutex		mutex_end;
@@ -71,7 +70,6 @@ typedef struct s_table
 	long			start_time;
 	t_my_mutex		mutex_can_write;
 	bool			can_write;
-	long			last_time;
 }				t_table;
 
 int		parsing(int argc, char **argv);
@@ -81,6 +79,7 @@ long	getime(t_table *table);
 void	*routine(void *arg);
 void	usleep_with_check_die(long usec, t_table *table);
 void	print_mutex(t_philo *philo, char *str);
+void	print_mutex_end(t_philo *philo, char *str);
 void	*check_end_simulation(void *arg);
 
 bool	wait_for_begin(t_table *table);

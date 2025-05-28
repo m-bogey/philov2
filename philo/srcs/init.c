@@ -6,7 +6,7 @@
 /*   By: mbogey <mbogey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 19:18:45 by mbogey            #+#    #+#             */
-/*   Updated: 2025/05/10 16:55:11 by mbogey           ###   ########.fr       */
+/*   Updated: 2025/05/15 02:01:49 by mbogey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,10 @@ static void	other_init(t_table *table)
 		table->philos[i].mutex_time_last_meal.m_init = 0;
 		i++;
 	}
-	table->mutex_print.m_init = 0;
 	table->mutex_ready.m_init = 0;
 	table->mutex_end.m_init = 0;
 	table->mutex_start_time.m_init = 0;
 	table->mutex_can_write.m_init = 0;
-	table->last_time = 0;
 	table->start_time = -1;
 	table->philos_ready = false;
 }
@@ -84,8 +82,6 @@ static int	init_mutex(t_table *table)
 			return (-1);
 		i++;
 	}
-	if (safe_init_mutex(&table->mutex_print) == -1)
-		return (-1);
 	if (safe_init_mutex(&table->mutex_ready) == -1)
 		return (-1);
 	if (safe_init_mutex(&table->mutex_end) == -1)
